@@ -43,7 +43,8 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <div className="relative flex flex-col h-screen">
+          <div className="flex flex-row h-screen">
+          
             <SidebarProvider>
               <AppSidebar />
               <main className="flex flex-1 flex-col gap-4 p-4">
