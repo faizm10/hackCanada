@@ -1,71 +1,55 @@
-import { redirect } from "next/navigation";
-import { Link } from "@heroui/link";
-import { Snippet } from "@heroui/snippet";
-import { Code } from "@heroui/code";
-import { button as buttonStyles } from "@heroui/theme";
+"use client";
 
-import { siteConfig } from "@/config/site";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+import { siteConfig } from "@/config/site";
 
-// Example authentication check function.
-// Replace this with your actual user/session retrieval logic.
-async function getUser() {
-  // For example, you might fetch the session from cookies or a database.
-  // Return the user object if authenticated, or null otherwise.
-  return null; // This is a placeholder that always represents a logged-out state.
-}
-
-export default async function Home() {
-  // const user = await getUser();
-
-  // if (!user) {
-  //   redirect("/login");
-  // }
+export default function LandingPage() {
+  const router = useRouter();
 
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div className="inline-block max-w-xl text-center justify-center">
-        <span className={title()}>Make&nbsp;</span>
-        <span className={title({ color: "violet" })}>beautiful&nbsp;</span>
-        <br />
-        <span className={title()}>
-          websites regardless of your design experience.
-        </span>
-        <div className={subtitle({ class: "mt-4" })}>
-          Beautiful, fast and modern React UI library.
-        </div>
+    <section className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-black text-center p-6">
+      {/* Logo & Branding */}
+      <div className="mb-6">
+        <h1 className={title({ color: "black" })}>TenantShield</h1>
+        <p className={subtitle({ class: "mt-2 text-gray-600 dark:text-gray-300" })}>
+          AI-powered legal assistance for Canadian tenants.
+        </p>
       </div>
 
-      <div className="flex gap-3">
-        <Link
-          isExternal
-          className={buttonStyles({
-            color: "primary",
-            radius: "full",
-            variant: "shadow",
-          })}
-          href={siteConfig.links.docs}
-        >
-          Documentation
-        </Link>
-        <Link
-          isExternal
-          className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
-        </Link>
+      {/* Hero Section */}
+      <div className="max-w-2xl">
+        <h2 className="text-3xl font-bold leading-tight text-black dark:text-white">
+          Understand Your Rights & Resolve Rental Disputes Easily.
+        </h2>
+        <p className="mt-4 text-gray-700 dark:text-gray-300">
+          TenantShield helps you navigate rental disputes, generate legal documents, 
+          and connect with free legal aid—all in one place.
+        </p>
       </div>
 
-      <div className="mt-8">
-        <Snippet hideCopyButton hideSymbol variant="bordered">
-          <span>
-            Get started by editing <Code color="primary">app/page.tsx</Code>
-          </span>
-        </Snippet>
+      {/* Call to Action */}
+      <div className="mt-6 flex gap-4">
+        <Button
+          className="bg-black text-white px-6 py-3 rounded-lg text-lg hover:bg-gray-800 transition"
+          onClick={() => router.push("/login")}
+        >
+          Log In
+        </Button>
+        <Button
+          variant="outline"
+          className="border border-gray-600 px-6 py-3 rounded-lg text-lg text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+          onClick={() => router.push(siteConfig.links.docs)}
+        >
+          Learn More
+        </Button>
       </div>
+
+      {/* Footer */}
+      <footer className="mt-12 text-gray-500 text-sm">
+        © {new Date().getFullYear()} TenantShield. All rights reserved.
+      </footer>
     </section>
   );
 }

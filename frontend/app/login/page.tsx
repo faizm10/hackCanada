@@ -6,12 +6,21 @@ import { auth } from "../../lib/firebase/firebaseClient";
 import type React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GalleryVerticalEnd } from "lucide-react";
 
-export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"div">) {
   const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
@@ -45,8 +54,15 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         <CardContent>
           <div className="grid gap-6">
             <div className="flex flex-col gap-4">
-              <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={loading}>
-                {loading ? "Signing in..." : (
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={handleGoogleSignIn}
+                disabled={loading}
+              >
+                {loading ? (
+                  "Signing in..."
+                ) : (
                   <>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                       <path
@@ -61,7 +77,10 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             </div>
             <div className="text-center text-sm">
               Don't have an account?{" "}
-              <a href="https://accounts.google.com/lifecycle/steps/signup/name?ddm=1&dsh=S1311581002:1740210328097557&flowEntry=SignUp&flowName=GlifWebSignIn&hl=en-GB&ifkv=ASSHykrbYrlwGm3XZXVcIB2VWQxY6-wOyPEmF4adMZptECcHRbmSSkEhRc_dvhqW78aSERWN89L6&TL=ADgdZ7TNNU18OBCjlxpQultckN-9Q8V1ItnBObFRvjP5FsC2qq_mVaB4AgtTUrpq&continue=https://accounts.google.com/ManageAccount?nc%3D1" className="underline underline-offset-4">
+              <a
+                href="https://accounts.google.com/lifecycle/steps/signup/name?ddm=1&dsh=S1311581002:1740210328097557&flowEntry=SignUp&flowName=GlifWebSignIn&hl=en-GB&ifkv=ASSHykrbYrlwGm3XZXVcIB2VWQxY6-wOyPEmF4adMZptECcHRbmSSkEhRc_dvhqW78aSERWN89L6&TL=ADgdZ7TNNU18OBCjlxpQultckN-9Q8V1ItnBObFRvjP5FsC2qq_mVaB4AgtTUrpq&continue=https://accounts.google.com/ManageAccount?nc%3D1"
+                className="underline underline-offset-4"
+              >
                 Sign up
               </a>
             </div>
@@ -69,7 +88,8 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         </CardContent>
       </Card>
       <div className="text-center text-xs text-muted-foreground">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
+        and <a href="#">Privacy Policy</a>.
       </div>
       <Button variant="outline" className="w-full" onClick={handleLogout}>
         Logout
@@ -81,9 +101,9 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
-      <div className="flex w-full max-w-sm flex-col gap-6">
+      <div className="flex w-full  flex-col gap-6">
         <a href="#" className="flex items-center gap-2 self-center font-medium">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md text-primary-foreground">
             <GalleryVerticalEnd className="size-4" />
           </div>
           TenantSheild
