@@ -1,0 +1,6 @@
+# Ignore environment variables and secrets
+.env
+firebase-config.json
+
+# Ignore dependencies
+node_modules/
