@@ -22,13 +22,18 @@
   "@heroui/theme": "2.4.9",
   "@react-aria/ssr": "3.9.7",
   "@react-aria/visually-hidden": "3.8.19",
-  "clsx": "2.1.1",
+  "class-variance-authority": "^0.7.1",
+  "clsx": "^2.1.1",
   "framer-motion": "11.13.1",
   "intl-messageformat": "^10.5.0",
+  "lucide-react": "^0.475.0",
+  "motion": "^12.4.7",
   "next": "15.0.4",
   "next-themes": "^0.4.4",
   "react": "18.3.1",
-  "react-dom": "18.3.1"
+  "react-dom": "18.3.1",
+  "tailwind-merge": "^3.0.1",
+  "tailwindcss-animate": "^1.0.7"
  },
  "devDependencies": {
   "@next/eslint-plugin-next": "15.0.4",
@@ -39,6 +44,7 @@
   "@typescript-eslint/eslint-plugin": "8.11.0",
   "@typescript-eslint/parser": "8.11.0",
   "autoprefixer": "10.4.19",
+  "daisyui": "^4.12.23",
   "eslint": "^8.57.0",
   "eslint-config-next": "15.0.4",
   "eslint-config-prettier": "9.1.0",
