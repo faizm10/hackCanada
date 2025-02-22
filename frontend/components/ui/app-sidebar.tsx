@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { SearchForm } from "@/components/ui/search-form"
+// import { SearchForm } from "@/components/ui/search-form"
 import { VersionSwitcher } from "@/components/ui/version-switcher"
 import {
   Sidebar,
@@ -17,7 +17,6 @@ import {
 
 // Sidebar navigation for TenantShield
 const data = {
-  versions: ["1.0.0", "1.1.0-alpha", "2.0.0-beta"],
   navMain: [
     {
       title: "Dashboard",
@@ -92,10 +91,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar {...props}>
       <SidebarHeader>
         <VersionSwitcher
-          versions={data.versions}
-          defaultVersion={data.versions[0]}
         />
-        <SearchForm />
+        {/* <SearchForm /> */}
       </SidebarHeader>
       <SidebarContent>
         
