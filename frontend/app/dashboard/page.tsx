@@ -57,23 +57,42 @@ export default function DashboardPage() {
     router.push(`/case-builder/${id}`);
   };
 
+  const handleCreateCase = () => {
+    router.push(`/case-builder`);
+  };
+
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
+    <div className="flex flex-col gap-6 p-6 max-w-6xl mx-auto">
+      {/* Header Section */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
+        <h1 className="text-3xl font-semibold">Dashboard</h1>
         <Button
           variant="default"
-          className="bg-black text-white hover:bg-black/90"
+          className="bg-black text-white px-5 py-3 text-lg hover:bg-black/90"
+          onClick={() => handleCreateCase()}
         >
           Create New Case
         </Button>
       </div>
 
-      <StatsCards />
-      <AnimatedListDemo />
+      {/* Stats & Notifications Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Stats Section - Now dynamically tracking cases */}
+        <div className="md:col-span-2">
+          <StatsCards cases={mockCases} />
+        </div>
+
+        {/* Notifications Panel */}
+        <div className=" dark:bg-gray-900  p-4 max-h-60 overflow-y-auto">
+          <h2 className="text-lg font-semibold mb-2">Recent Updates</h2>
+          <AnimatedListDemo />
+        </div>
+      </div>
+
+      {/* Recent Cases Section */}
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Recent Cases</h2>
-        <div className="rounded-lg border bg-white dark:bg-black">
+        <h2 className="text-2xl font-semibold">Recent Cases</h2>
+        <div className="rounded-lg border bg-white dark:bg-black shadow-sm">
           <CasesTable cases={mockCases} onViewDetails={handleViewDetails} />
         </div>
       </div>

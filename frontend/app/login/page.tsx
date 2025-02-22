@@ -100,13 +100,13 @@ export function LoginForm({
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6  p-6 md:p-10">
       <div className="flex w-full  flex-col gap-6">
         <a href="#" className="flex items-center gap-2 self-center font-medium">
           <div className="flex h-6 w-6 items-center justify-center rounded-md text-primary-foreground">
             <GalleryVerticalEnd className="size-4" />
           </div>
-          TenantSheild
+          {/* TenantSheild */}
         </a>
         <LoginForm />
       </div>

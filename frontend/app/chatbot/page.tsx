@@ -1,88 +1,129 @@
-"use client"
+"use client";
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import ReactMarkdown from "react-markdown";
+import { Input } from "@heroui/input";
+import { ProvinceSelect } from "@/components/province-select";
 
-import { useChat } from "ai/react"
-import { useState, useRef, useEffect } from "react"
-import { Card } from "@/components/ui/card"
-import { ChatInput } from "@/components/chat-input"
-import { ChatMessage } from "@/components/chat-message"
-import { ProvinceSelect } from "@/components/province-select"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react"
+interface Message {
+  text: string;
+  sender: "bot" | "user";
+}
 
-export default function ChatbotPage() {
-  const [province, setProvince] = useState("")
-  const [error, setError] = useState<string | null>(null)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: "/api/chat",
-    body: {
-      province,
-    },
-    onError: (error) => {
-      console.error("Chat Error:", error)
-      setError("Sorry, there was an error processing your request. Please try again.")
-    },
-  })
+const ChatBot: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>([
+    { text: "👋 Hello! Please select your province and ask me any tenant-related legal questions.", sender: "bot" },
+  ]);
+  const [inputValue, setInputValue] = useState("");
+  const [province, setProvince] = useState(""); // Province selection
+  const [loading, setLoading] = useState(false);
+  const endOfMessagesRef = useRef<null | HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+    scrollToBottom();
+  }, [messages]);
 
-  const handleSend = () => {
-    if (!province) {
-      setError("Please select a province before asking a question.")
-      return
+  const handleSendMessage = async (): Promise<void> => {
+    if (!inputValue.trim() || !province) {
+      alert("Please select a province and enter a question.");
+      return;
     }
-    setError(null)
-    handleSubmit(input)
-  }
+
+    const newUserMessage: Message = { text: inputValue, sender: "user" };
+    setMessages((prevMessages) => [...prevMessages, newUserMessage]);
+    setInputValue("");
+    setLoading(true);
+
+    try {
+      const response = await axios.post("/api/chat", {
+        messages: [...messages, newUserMessage], // Send chat history
+        province,
+      });
+
+      // Stream response from Gemini AI
+      const reader = response.data.getReader();
+      let receivedText = "";
+
+      reader.read().then(async function processText({ done, value }) {
+        if (done) {
+          setLoading(false);
+          return;
+        }
+
+        // Decode the streamed chunk
+        const decodedText = new TextDecoder().decode(value);
+        receivedText += decodedText;
+
+        // Update messages dynamically as the response is streamed
+        setMessages((prevMessages) => [
+          ...prevMessages.filter((msg) => msg.sender !== "bot"),
+          { text: receivedText, sender: "bot" },
+        ]);
+
+        // Read the next chunk
+        return reader.read().then(processText);
+      });
+    } catch (error) {
+      console.error("Failed to fetch:", error);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: "❌ Error connecting to the AI service. Please try again.", sender: "bot" },
+      ]);
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="flex-1 space-y-6 p-8">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col h-screen">
+      <div className="flex items-center justify-between p-4">
         <h1 className="text-2xl font-semibold">Legal Assistant</h1>
         <ProvinceSelect
           value={province}
-          onChange={(value) => {
-            setProvince(value)
-            setError(null)
-          }}
+          onChange={(value) => setProvince(value)}
         />
       </div>
 
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      <Card className="flex h-[600px] flex-col">
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.length === 0 && (
-            <div className="text-center text-muted-foreground p-4">
-              👋 Hello! I'm your AI legal assistant. Please select your province and ask me any questions about tenant
-              rights in Canada.
+      <div className="flex-1 p-4 overflow-auto">
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"} mb-2`}
+          >
+            <div
+              className={`max-w-xs md:max-w-md px-4 py-2 rounded-lg ${
+                msg.sender === "user" ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
+              }`}
+            >
+              {msg.sender === "bot" ? <ReactMarkdown>{msg.text}</ReactMarkdown> : msg.text}
             </div>
-          )}
-          {messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-        <ChatInput
-          input={input}
-          handleInputChange={handleInputChange}
-          handleSubmit={handleSend}
-          isLoading={isLoading}
-        />
-      </Card>
-    </div>
-  )
-}
+          </div>
+        ))}
+        <div ref={endOfMessagesRef} />
+      </div>
 
+      <div className="p-4 flex justify-center items-center">
+        <div className="w-full max-w-2xl">
+          <div className="flex items-center justify-center p-3 rounded-full gap-5">
+            <Input
+              onChange={(e) => setInputValue(e.target.value)}
+              value={inputValue}
+              type="text"
+              placeholder="Ask me about your tenant rights..."
+              onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && handleSendMessage()}
+              className="flex-1 p-2 text-lg"
+            />
+          </div>
+          <p className="text-xs text-center font-bold mt-4">
+            ⚠️ The chatbot may provide general guidance but is not a substitute for legal advice. Always confirm with a professional.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ChatBot;
