@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { Link } from "@heroui/link";
 import { Snippet } from "@heroui/snippet";
 import { Code } from "@heroui/code";
@@ -7,7 +8,21 @@ import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
 import { GithubIcon } from "@/components/icons";
 
-export default function Home() {
+// Example authentication check function.
+// Replace this with your actual user/session retrieval logic.
+async function getUser() {
+  // For example, you might fetch the session from cookies or a database.
+  // Return the user object if authenticated, or null otherwise.
+  return null; // This is a placeholder that always represents a logged-out state.
+}
+
+export default async function Home() {
+  // const user = await getUser();
+
+  // if (!user) {
+  //   redirect("/login");
+  // }
+
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <div className="inline-block max-w-xl text-center justify-center">
