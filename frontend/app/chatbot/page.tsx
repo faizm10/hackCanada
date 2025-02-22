@@ -32,50 +32,42 @@ const ChatBot: React.FC = () => {
       alert("Please select a province and enter a question.");
       return;
     }
-
+  
     const newUserMessage: Message = { text: inputValue, sender: "user" };
     setMessages((prevMessages) => [...prevMessages, newUserMessage]);
     setInputValue("");
     setLoading(true);
-
+  
     try {
-      const response = await axios.post("/api/chat", {
-        messages: [...messages, newUserMessage], // Send chat history
-        province,
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: "testUser123", // Add a valid userId
+          message: inputValue,
+          province,
+        }),
       });
-
-      // Stream response from Gemini AI
-      const reader = response.data.getReader();
-      let receivedText = "";
-
-      reader.read().then(async function processText({ done, value }) {
-        if (done) {
-          setLoading(false);
-          return;
-        }
-
-        // Decode the streamed chunk
-        const decodedText = new TextDecoder().decode(value);
-        receivedText += decodedText;
-
-        // Update messages dynamically as the response is streamed
-        setMessages((prevMessages) => [
-          ...prevMessages.filter((msg) => msg.sender !== "bot"),
-          { text: receivedText, sender: "bot" },
-        ]);
-
-        // Read the next chunk
-        return reader.read().then(processText);
-      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+  
+      setMessages((prevMessages) => [...prevMessages, { text: data.response, sender: "bot" }]);
     } catch (error) {
       console.error("Failed to fetch:", error);
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: "❌ Error connecting to the AI service. Please try again.", sender: "bot" },
       ]);
+    } finally {
       setLoading(false);
     }
   };
+  
+  
 
   return (
     <div className="flex flex-col h-screen">
