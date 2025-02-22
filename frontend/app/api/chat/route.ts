@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { GoogleGenerativeAIStream, StreamingTextResponse } from "ai";
+import { experimental_generateImage, streamText } from "ai";
 import { searchLegalDocuments } from "@/lib/firebase";
 import { getSystemPrompt } from "./context";
 
