@@ -46,7 +46,7 @@ export default function RootLayout({
           <div className="relative flex flex-col h-screen">
             <SidebarProvider>
               <AppSidebar />
-              <main className="">
+              <main className="flex flex-1 flex-col gap-4 p-4">
                 <SidebarTrigger />
                 {children}
               </main>
