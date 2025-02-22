@@ -45,10 +45,10 @@ const data = {
           title: "Case Builder",
           url: "/case-builder",
         },
-        // {
-        //   title: "Legal Document Generator",
-        //   url: "/document-generator",
-        // },
+        {
+          title: "Legal Document",
+          url: "/legal-document",
+        },
         // {
         //   title: "Find Legal Aid",
         //   url: "/legal-aid",
