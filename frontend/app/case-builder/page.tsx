@@ -14,7 +14,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 const steps = [
   { id: "info", title: "Case Information" },
   { id: "details", title: "Dispute Details" },
@@ -191,18 +199,53 @@ export default function CaseBuilderPage() {
       {/* Case Form */}
       <div className="bg-white shadow-lg rounded-lg p-8 space-y-6">
         {currentStep === 0 && (
-          <>
-            <Input
-              placeholder="Case Type"
-              value={caseDetails.type}
-              onChange={(e) => updateCaseInfo("type", e.target.value)}
-            />
-            <Input
-              placeholder="Case Title"
-              value={caseDetails.title}
-              onChange={(e) => updateCaseInfo("title", e.target.value)}
-            />
-          </>
+          <div className="space-y-6">
+            {/* Case Type */}
+            <div>
+              <label className="block text-lg font-medium mb-2">
+                Case Type
+              </label>
+              <Select
+                value={caseDetails.type}
+                onValueChange={(value) => updateCaseInfo("type", value)}
+              >
+                <SelectTrigger className="w-full p-4 text-lg border rounded-lg">
+                  <SelectValue placeholder="Select Case Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Case Types</SelectLabel>
+                    <SelectItem value="Eviction Appeal">
+                      Eviction Appeal
+                    </SelectItem>
+                    <SelectItem value="Rent Dispute">Rent Dispute</SelectItem>
+                    <SelectItem value="Property Damage">
+                      Property Damage
+                    </SelectItem>
+                    <SelectItem value="Lease Termination">
+                      Lease Termination
+                    </SelectItem>
+                    <SelectItem value="Security Deposit Dispute">
+                      Security Deposit Dispute
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Case Title */}
+            <div>
+              <label className="block text-lg font-medium mb-2">
+                Case Title
+              </label>
+              <Input
+                placeholder="Enter Case Title"
+                value={caseDetails.title}
+                onChange={(e) => updateCaseInfo("title", e.target.value)}
+                className="p-4 text-lg border rounded-lg"
+              />
+            </div>
+          </div>
         )}
         {currentStep === 1 && (
           <>
@@ -230,21 +273,29 @@ export default function CaseBuilderPage() {
         )}
         {currentStep === 2 && (
           <>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button>{selectedStatus}</Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {STATUS_OPTIONS.map((status) => (
-                  <DropdownMenuItem
-                    key={status}
-                    onClick={() => handleStatusChange(status)}
-                  >
-                    {status}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div>
+              <label className="block text-lg font-medium mb-2">
+                Case Status
+              </label>
+              <Select
+                value={selectedStatus}
+                onValueChange={(value) => handleStatusChange(value)}
+              >
+                <SelectTrigger className="w-full p-4 text-lg border rounded-lg">
+                  <SelectValue placeholder="Select Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Status Options</SelectLabel>
+                    <SelectItem value="Draft">Draft</SelectItem>
+                    <SelectItem value="In Progress">In Progress</SelectItem>
+                    <SelectItem value="Submitted">Submitted</SelectItem>
+                    <SelectItem value="Resolved">Resolved</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
             <Slider
               value={[progressValue]}
               max={100}

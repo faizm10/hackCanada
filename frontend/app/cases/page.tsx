@@ -68,10 +68,10 @@ export default async function CasesPage() {
                           case_.status === "Draft"
                             ? "secondary"
                             : case_.status === "Submitted"
-                            ? "default"
-                            : case_.status === "Resolved"
-                            ? "success"
-                            : "warning"
+                              ? "default"
+                              : case_.status === "Resolved"
+                                ? "success"
+                                : "warning"
                         }
                       >
                         {case_.status}

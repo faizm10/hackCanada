@@ -2,7 +2,7 @@ export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
   name: "Tenant Shield",
-  description: "Make beautiful websites regardless of your design experience.",
+  description: "AI Legal Tenant",
   navItems: [
     {
       label: "Home",

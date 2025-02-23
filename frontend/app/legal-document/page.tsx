@@ -1,11 +1,17 @@
 "use client";
+import LegalDocumentPDF from "./LegalDocumentPDF";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectTrigger, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectItem,
+} from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { jsPDF } from "jspdf";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 
 const LegalDoc = () => {
   const [formData, setFormData] = useState({
@@ -17,92 +23,141 @@ const LegalDoc = () => {
     tenantAddress: "",
     caseDetails: "",
   });
-  const [generatedDocument, setGeneratedDocument] = useState("");
-  const [editing, setEditing] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const [generated, setGenerated] = useState(false);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleGenerate = async () => {
-    setLoading(true);
-
-    try {
-      const response = await fetch("/api/legal-document", { 
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      
-      if (!response.ok) {
-        throw new Error("Failed to generate document");
-      }
-
-      const data = await response.json();
-      setGeneratedDocument(data.document);
-      setEditing(true);
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDownload = () => {
-    const doc = new jsPDF();
-    const margin = 10;
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const maxLineWidth = pageWidth - margin * 2;
-    const lines = doc.splitTextToSize(generatedDocument, maxLineWidth);
-    doc.text(lines, margin, margin);
-    doc.save(`${formData.documentType}.pdf`);
+  const handleGenerate = () => {
+    setGenerated(true);
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      {!editing ? (
-        <Card className="p-4">
+    <div className="flex flex-col gap-8 p-12 max-w-6xl mx-auto">
+      {!generated ? (
+        <Card className="p-6 w-full shadow-lg bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="text-xl font-bold mb-4">Generate Legal Document</CardTitle>
+            <CardTitle className="text-3xl font-bold mb-6 text-center">
+              Generate Legal Document
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <Select
-              value={formData.documentType}
-              onValueChange={(value) => setFormData({ ...formData, documentType: value })}
+          <CardContent className="space-y-6">
+            {/* Document Type */}
+            <div>
+              <label className="text-lg font-medium mb-2">Document Type</label>
+              <Select
+                value={formData.documentType}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, documentType: value })
+                }
+              >
+                <SelectTrigger className="text-lg p-4 border rounded-lg">
+                  {formData.documentType}
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Eviction Appeal">
+                    Eviction Appeal
+                  </SelectItem>
+                  <SelectItem value="Rent Dispute">Rent Dispute</SelectItem>
+                  <SelectItem value="Complaint">Complaint</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Landlord Details */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Input
+                name="landlordName"
+                placeholder="Landlord’s Name"
+                onChange={handleChange}
+                className="p-4 text-lg border rounded-lg"
+              />
+              <Input
+                name="landlordEmail"
+                placeholder="Landlord’s Email"
+                onChange={handleChange}
+                className="p-4 text-lg border rounded-lg"
+              />
+              <Input
+                name="landlordAddress"
+                placeholder="Landlord’s Address"
+                onChange={handleChange}
+                className="p-4 text-lg border rounded-lg col-span-2"
+              />
+            </div>
+
+            {/* Tenant Details */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Input
+                name="tenantName"
+                placeholder="Tenant’s Name"
+                onChange={handleChange}
+                className="p-4 text-lg border rounded-lg"
+              />
+              <Input
+                name="tenantAddress"
+                placeholder="Tenant’s Address"
+                onChange={handleChange}
+                className="p-4 text-lg border rounded-lg"
+              />
+            </div>
+
+            {/* Case Details */}
+            <Textarea
+              name="caseDetails"
+              placeholder="Provide detailed case information"
+              onChange={handleChange}
+              className="p-4 text-lg border rounded-lg h-40"
+            />
+
+            {/* Generate Button */}
+            <Button
+              onClick={handleGenerate}
+              className="w-full py-3 text-lg font-semibold bg-black text-white rounded-lg hover:bg-gray-800"
             >
-              <SelectTrigger>{formData.documentType}</SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Eviction Appeal">Eviction Appeal</SelectItem>
-                <SelectItem value="Rent Dispute">Rent Dispute</SelectItem>
-                <SelectItem value="Complaint">Complaint</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input name="landlordName" placeholder="Landlord’s Name" onChange={handleChange} className="mt-4" />
-            <Input name="landlordAddress" placeholder="Landlord’s Address" onChange={handleChange} className="mt-4" />
-            <Input name="landlordEmail" placeholder="Landlord’s Email" onChange={handleChange} className="mt-4" />
-            <Input name="tenantName" placeholder="Tenant’s Name" onChange={handleChange} className="mt-4" />
-            <Input name="tenantAddress" placeholder="Tenant’s Address" onChange={handleChange} className="mt-4" />
-            <Textarea name="caseDetails" placeholder="Case Details" onChange={handleChange} className="mt-4" />
-            <Button onClick={handleGenerate} className="mt-4 w-full" disabled={loading}>
-              {loading ? "Generating..." : "Generate Document"}
+              Generate Document
             </Button>
           </CardContent>
         </Card>
       ) : (
-        <Card className="p-4">
+        <Card className="p-6 w-full shadow-lg bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="text-xl font-bold mb-4">Generated Legal Document</CardTitle>
+            <CardTitle className="text-3xl font-bold mb-6 text-center">
+              Legal Document Preview
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <Textarea
-              value={generatedDocument}
-              onChange={(e) => setGeneratedDocument(e.target.value)}
-              className="w-full h-40"
-            />
-            <div className="flex gap-2 mt-4">
-              <Button onClick={() => setEditing(false)}>Modify Inputs</Button>
-              <Button onClick={handleDownload}>Download Document as PDF</Button>
+          <CardContent className="space-y-6">
+            <div className="border p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+              <p className="text-lg font-medium mb-2">
+                Your document is ready.
+              </p>
+              <PDFDownloadLink
+                document={<LegalDocumentPDF formData={formData} />}
+                fileName={`${formData.documentType}.pdf`}
+                className="inline-block mt-4"
+              >
+                {({ loading }) =>
+                  loading ? (
+                    <Button className="bg-gray-500 text-white w-full" disabled>
+                      Generating...
+                    </Button>
+                  ) : (
+                    <Button className="bg-black text-white w-full">
+                      Download PDF
+                    </Button>
+                  )
+                }
+              </PDFDownloadLink>
+            </div>
+
+            <div className="flex justify-center gap-4">
+              <Button onClick={() => setGenerated(false)}>
+                Modify Inputs
+              </Button>
             </div>
           </CardContent>
         </Card>

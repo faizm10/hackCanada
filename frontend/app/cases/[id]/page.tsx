@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation"; // useParams for Next.js dynamic routing
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,10 +20,11 @@ interface CaseDetails {
   evidence: string[]; // Array of file URLs
 }
 
-const EditCasePage = ({ params }: { params: { id: string } }) => {
+const EditCasePage = () => {
   const router = useRouter();
+  const { id } = useParams(); // Fetch dynamic route params
   const supabase = createClientComponentClient();
-  const caseId = params.id;
+  const [caseId, setCaseId] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false); // New state for save button loading
@@ -31,6 +32,14 @@ const EditCasePage = ({ params }: { params: { id: string } }) => {
   const [updatedCase, setUpdatedCase] = useState<CaseDetails | null>(null);
 
   useEffect(() => {
+    if (id) {
+      setCaseId(id as string);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (!caseId) return; // Ensure caseId is available
+
     const fetchCaseData = async () => {
       setLoading(true);
       const { data, error } = await supabase
@@ -42,6 +51,7 @@ const EditCasePage = ({ params }: { params: { id: string } }) => {
       if (error) {
         console.error("Error fetching case:", error);
         toast.error("Failed to load case data.");
+        setLoading(false);
         return;
       }
 
@@ -71,7 +81,7 @@ const EditCasePage = ({ params }: { params: { id: string } }) => {
   };
 
   const handleSave = async () => {
-    if (!updatedCase) return;
+    if (!updatedCase || !caseId) return;
 
     setSaving(true); // Start showing loading indicator
 
