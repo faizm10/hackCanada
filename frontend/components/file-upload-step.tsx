@@ -1,16 +1,16 @@
-"use client";
+"use client"
 
-import { useCallback } from "react";
-import { useDropzone } from "react-dropzone";
-import { Upload, X } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import type { CaseFile } from "@/types/case";
+import { useCallback } from "react"
+import { useDropzone } from "react-dropzone"
+import { Upload, X } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
+import { Button } from "@/components/ui/button"
+import type { CaseFile } from "@/types/case"
 
 interface FileUploadStepProps {
-  files: CaseFile[];
-  onFilesChange: (files: CaseFile[]) => void;
+  files: CaseFile[]
+  onFilesChange: (files: CaseFile[]) => void
 }
 
 export function FileUploadStep({ files, onFilesChange }: FileUploadStepProps) {
@@ -22,11 +22,11 @@ export function FileUploadStep({ files, onFilesChange }: FileUploadStepProps) {
         size: file.size,
         type: file.type,
         progress: 0,
-      }));
-      onFilesChange([...files, ...newFiles]);
+      }))
+      onFilesChange([...files, ...newFiles])
     },
-    [files, onFilesChange]
-  );
+    [files, onFilesChange],
+  )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -34,14 +34,13 @@ export function FileUploadStep({ files, onFilesChange }: FileUploadStepProps) {
       "image/*": [".png", ".jpg", ".jpeg"],
       "application/pdf": [".pdf"],
       "application/msword": [".doc"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        [".docx"],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
     },
-  });
+  })
 
   const removeFile = (id: string) => {
-    onFilesChange(files.filter((file) => file.id !== id));
-  };
+    onFilesChange(files.filter((file) => file.id !== id))
+  }
 
   return (
     <Card>
@@ -56,36 +55,20 @@ export function FileUploadStep({ files, onFilesChange }: FileUploadStepProps) {
         >
           <input {...getInputProps()} />
           <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
-          <p className="mt-2 text-sm text-muted-foreground">
-            Drag & drop files here, or click to select files
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Supports: PDF, DOC, DOCX, PNG, JPG (up to 10MB)
-          </p>
+          <p className="mt-2 text-sm text-muted-foreground">Drag & drop files here, or click to select files</p>
+          <p className="text-xs text-muted-foreground">Supports: PDF, DOC, DOCX, PNG, JPG (up to 10MB)</p>
         </div>
 
         {files.length > 0 && (
           <div className="space-y-4">
             {files.map((file) => (
-              <div
-                key={file.id}
-                className="flex items-center gap-4 p-4 border rounded-lg"
-              >
+              <div key={file.id} className="flex items-center gap-4 p-4 border rounded-lg">
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{file.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {(file.size / 1024 / 1024).toFixed(2)} MB
-                  </p>
-                  {typeof file.progress === "number" && (
-                    <Progress value={file.progress} className="h-1 mt-2" />
-                  )}
+                  <p className="text-xs text-muted-foreground">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                  {typeof file.progress === "number" && <Progress value={file.progress} className="h-1 mt-2" />}
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="shrink-0"
-                  onClick={() => removeFile(file.id)}
-                >
+                <Button variant="ghost" size="icon" className="shrink-0" onClick={() => removeFile(file.id)}>
                   <X className="h-4 w-4" />
                   <span className="sr-only">Remove file</span>
                 </Button>
@@ -95,5 +78,6 @@ export function FileUploadStep({ files, onFilesChange }: FileUploadStepProps) {
         )}
       </CardContent>
     </Card>
-  );
+  )
 }
+
