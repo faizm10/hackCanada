@@ -2,6 +2,8 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const admin = require("firebase-admin");
 require("dotenv").config();
 
+const { getSystemPrompt } = require("./context"); // Destructure the export
+
 
 // Firebase setup
 const serviceAccount = require("./firebase-config.json"); // Replace with your Firebase config file
@@ -31,7 +33,7 @@ async function getLegalAdvice(userId, message, province) {
   // Generate AI response using Gemini
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
   const response = await model.generateContent([
-    `You are a legal assistant. Provide responses based on the following province-specific law: ${legalContext}`,
+    getSystemPrompt(province.toLowerCase()),
     message,
   ]);
   const aiResponse = response.response.text();
