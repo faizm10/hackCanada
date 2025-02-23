@@ -6,9 +6,15 @@ const { getSystemPrompt } = require("./context"); // Destructure the export
 
 // Firebase setup
 const serviceAccount = require("../firebase-config.json"); // Replace with your Firebase config file
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
+
+
 const db = admin.firestore();
 
 // Gemini AI setup
