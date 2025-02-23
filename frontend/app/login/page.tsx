@@ -15,7 +15,7 @@ import {
 import { GalleryVerticalEnd } from "lucide-react";
 import Link from "next/link";
 
-export function LoginForm({
+export default function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
@@ -66,34 +66,34 @@ export function LoginForm({
   );
 }
 
-export default function HomePage() {
-  return (
-    <div className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: "url('/images/hero-background.jpg')" }}>
-      <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center text-white text-center p-6">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">Empowering Tenants, Protecting Rights</h1>
-        <p className="text-lg md:text-xl max-w-2xl">
-          Tenant Shield helps renters understand their rights, challenge unfair treatment, and navigate housing issues.
-        </p>
-        <Link href="/login">
-          <button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg text-lg shadow-lg">
-            Get Started
-          </button>
-        </Link>
-      </div>
-      <div className="bg-white text-black text-center py-16 px-6">
-        <h2 className="text-3xl font-bold mb-6">What We Do</h2>
-        <p className="max-w-3xl mx-auto text-lg mb-8">
-          Tenant Shield is designed to empower tenants by providing them with legal resources, AI-driven case assistance, and expert guidance on housing laws.
-        </p>
-        <h2 className="text-3xl font-bold mb-6">How We Do It</h2>
-        <p className="max-w-3xl mx-auto text-lg mb-8">
-          We utilize AI to analyze rental agreements, assist in dispute resolution, and provide clear guidance on tenants' rights. Our platform connects tenants with legal experts when necessary.
-        </p>
-        <h2 className="text-3xl font-bold mb-6">How This Helps You</h2>
-        <p className="max-w-3xl mx-auto text-lg">
-          Whether you’re dealing with eviction threats, unfair rent increases, or need general legal advice, Tenant Shield ensures you have the knowledge and support to stand up for your rights.
-        </p>
-      </div>
-    </div>
-  );
-}
+// export default function HomePage() {
+//   return (
+//     <div className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: "url('/images/hero-background.jpg')" }}>
+//       <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center text-white text-center p-6">
+//         <h1 className="text-4xl md:text-6xl font-bold mb-4">Empowering Tenants, Protecting Rights</h1>
+//         <p className="text-lg md:text-xl max-w-2xl">
+//           Tenant Shield helps renters understand their rights, challenge unfair treatment, and navigate housing issues.
+//         </p>
+//         <Link href="/login">
+//           <button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg text-lg shadow-lg">
+//             Get Started
+//           </button>
+//         </Link>
+//       </div>
+//       <div className="bg-white text-black text-center py-16 px-6">
+//         <h2 className="text-3xl font-bold mb-6">What We Do</h2>
+//         <p className="max-w-3xl mx-auto text-lg mb-8">
+//           Tenant Shield is designed to empower tenants by providing them with legal resources, AI-driven case assistance, and expert guidance on housing laws.
+//         </p>
+//         <h2 className="text-3xl font-bold mb-6">How We Do It</h2>
+//         <p className="max-w-3xl mx-auto text-lg mb-8">
+//           We utilize AI to analyze rental agreements, assist in dispute resolution, and provide clear guidance on tenants' rights. Our platform connects tenants with legal experts when necessary.
+//         </p>
+//         <h2 className="text-3xl font-bold mb-6">How This Helps You</h2>
+//         <p className="max-w-3xl mx-auto text-lg">
+//           Whether you’re dealing with eviction threats, unfair rent increases, or need general legal advice, Tenant Shield ensures you have the knowledge and support to stand up for your rights.
+//         </p>
+//       </div>
+//     </div>
+//   );
+// }
