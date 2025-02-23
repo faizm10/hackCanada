@@ -9,6 +9,7 @@ import { CaseDetailsStep } from "@/components/case-details-step";
 import { FileUploadStep } from "@/components/file-upload-step";
 import { ReviewStep } from "@/components/review-step";
 import type { CaseDetails, CaseType } from "@/types/case";
+import { auth } from "../../lib/firebase/firebaseClient";
 
 const steps = [
   { id: "type", title: "Case Type" },
@@ -56,10 +57,18 @@ export default function CaseBuilderPage() {
   /** 🚀 Submits case to Supabase */
   const handleSubmit = async () => {
     try {
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
+      const userId = user.uid;
+
       // Upload all files to Supabase Storage
       const uploadedFiles = await Promise.all(caseDetails.files.map((file) => uploadFile(file)));
 
       const caseData = {
+        user_id: userId,
         type: caseDetails.type || "Unknown",
         description: caseDetails.description || "",
         landlord_name: caseDetails.landlordInfo?.name || "",
