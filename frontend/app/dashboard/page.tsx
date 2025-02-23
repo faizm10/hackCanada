@@ -6,7 +6,7 @@ import { CasesTable } from "@/components/cases-table";
 import { StatsCards } from "@/components/stats-cards";
 import { AnimatedListDemo } from "@/components/notifications";
 
-// Mock data for demonstration
+
 const mockCases = [
   {
     id: "1",

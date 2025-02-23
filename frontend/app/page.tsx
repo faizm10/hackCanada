@@ -11,9 +11,18 @@ import { FlipText } from "@/components/magicui/flip-text";
 import { MarqueeDemo } from "@/components/marquee";
 import Link from "next/link";
 import Image from "next/image";
-import { ShieldCheck, Scale, FileText, Users, AlertTriangle } from "lucide-react";
+import {
+  ShieldCheck,
+  Scale,
+  FileText,
+  Users,
+  AlertTriangle,
+} from "lucide-react";
 
-export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"div">) {
   const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
@@ -33,7 +42,9 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="shadow-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-xl font-semibold">Welcome to Tenant Shield</CardTitle>
+          <CardTitle className="text-xl font-semibold">
+            Welcome to Tenant Shield
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -56,11 +67,16 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             </div>
             <div className="flex justify-between text-sm text-gray-400">
               <label className="flex items-center gap-2">
-                <input type="checkbox" className="accent-blue-500" /> Remember me
+                <input type="checkbox" className="accent-blue-500" /> Remember
+                me
               </label>
-              <Link href="/forgot-password" className="hover:underline">Forgot Password?</Link>
+              <Link href="/forgot-password" className="hover:underline">
+                Forgot Password?
+              </Link>
             </div>
-            <Button className="w-full bg-blue-600 hover:bg-blue-700">Log in</Button>
+            <Button className="w-full bg-blue-600 hover:bg-blue-700">
+              Log in
+            </Button>
             <Button
               variant="outline"
               className="w-full border-gray-600 text-gray-300 hover:bg-gray-800"
@@ -86,7 +102,8 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         and{" "}
         <Link href="#" className="underline">
           Privacy Policy
-        </Link>.
+        </Link>
+        .
       </div>
     </div>
   );
@@ -104,7 +121,8 @@ export default function HomePage() {
             </h1>
           </BlurFade>
           <p className="text-lg font-bold tracking-wide text-black dark:text-white md:text-2xl">
-            Get legal guidance, generate dispute letters, and track your cases—all in one place.
+            Get legal guidance, generate dispute letters, and track your
+            cases—all in one place.
           </p>
 
           <div className="mt-6">
@@ -168,7 +186,15 @@ export default function HomePage() {
   );
 }
 
-function FeatureCard({ title, description, icon }: { title: string; description: string; icon: React.ReactNode }) {
+function FeatureCard({
+  title,
+  description,
+  icon,
+}: {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+}) {
   return (
     <Card className="bg-white dark:bg-gray-800 shadow-lg p-6 rounded-lg flex flex-col items-center text-center">
       <div className="flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-full p-4 mb-3 text-blue-600">

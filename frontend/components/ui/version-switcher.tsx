@@ -1,7 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown, GalleryVerticalEnd } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  Check,
+  ChevronsUpDown,
+  GalleryVerticalEnd,
+  LogOut,
+} from "lucide-react";
 
 import {
   DropdownMenu,
@@ -16,6 +23,20 @@ import {
 } from "@/components/ui/sidebar";
 
 export function VersionSwitcher() {
+  const router = useRouter();
+  const supabase = createClientComponentClient(); // Initialize Supabase client
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      router.push("/"); // Redirect to home page
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -34,6 +55,16 @@ export function VersionSwitcher() {
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            {/* Sign Out Button */}
+            <DropdownMenuItem
+              onClick={handleSignOut}
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <LogOut className="size-4 text-red-500" />
+              <span>Sign Out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>

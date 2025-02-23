@@ -1,9 +1,9 @@
-import { Input } from "@/components/ui/input"
+import type React from "react"
 import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileUploadZone } from "./file-upload-zone"
-import type { CaseFile } from "@/types/case"
+import { Button } from "@/components/ui/button"
+import { Upload } from "lucide-react"
 
 interface DisputeDetailsStepProps {
   description: string
@@ -12,10 +12,10 @@ interface DisputeDetailsStepProps {
     email: string
     phone: string
   }
-  files: CaseFile[]
-  onDescriptionChange: (value: string) => void
-  onLandlordInfoChange: (field: keyof DisputeDetailsStepProps["landlordInfo"], value: string) => void
-  onFilesChange: (files: CaseFile[]) => void
+  files: string[]
+  onDescriptionChange: (description: string) => void
+  onLandlordInfoChange: (field: string, value: string) => void
+  onFilesChange: (files: string[]) => void
 }
 
 export function DisputeDetailsStep({
@@ -26,64 +26,81 @@ export function DisputeDetailsStep({
   onLandlordInfoChange,
   onFilesChange,
 }: DisputeDetailsStepProps) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Dispute Details</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="description">Describe your dispute</Label>
-          <Textarea
-            id="description"
-            placeholder="Please provide details about your case..."
-            value={description}
-            onChange={(e) => onDescriptionChange(e.target.value)}
-            className="min-h-[150px]"
-          />
-        </div>
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const newFiles = Array.from(e.target.files).map((file) => URL.createObjectURL(file))
+      onFilesChange([...files, ...newFiles])
+    }
+  }
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Landlord Information</h3>
-          <div className="grid gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="landlordName">Name</Label>
-              <Input
-                id="landlordName"
-                placeholder="Enter landlord's name"
-                value={landlordInfo.name}
-                onChange={(e) => onLandlordInfoChange("name", e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="landlordEmail">Email</Label>
-              <Input
-                id="landlordEmail"
-                type="email"
-                placeholder="Enter landlord's email"
-                value={landlordInfo.email}
-                onChange={(e) => onLandlordInfoChange("email", e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="landlordPhone">Phone</Label>
-              <Input
-                id="landlordPhone"
-                type="tel"
-                placeholder="Enter landlord's phone number"
-                value={landlordInfo.phone}
-                onChange={(e) => onLandlordInfoChange("phone", e.target.value)}
-              />
-            </div>
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          value={description}
+          onChange={(e) => onDescriptionChange(e.target.value)}
+          placeholder="Describe your dispute in detail"
+          className="min-h-[150px]"
+        />
+      </div>
+
+      <div className="space-y-4">
+        <h3 className="font-medium">Landlord Information</h3>
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="landlord_name">Name</Label>
+            <Input
+              id="landlord_name"
+              value={landlordInfo.name}
+              onChange={(e) => onLandlordInfoChange("name", e.target.value)}
+              placeholder="Landlord's name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="landlord_email">Email</Label>
+            <Input
+              id="landlord_email"
+              type="email"
+              value={landlordInfo.email}
+              onChange={(e) => onLandlordInfoChange("email", e.target.value)}
+              placeholder="Landlord's email"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="landlord_phone">Phone</Label>
+            <Input
+              id="landlord_phone"
+              type="tel"
+              value={landlordInfo.phone}
+              onChange={(e) => onLandlordInfoChange("phone", e.target.value)}
+              placeholder="Landlord's phone number"
+            />
           </div>
         </div>
+      </div>
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Evidence Files</h3>
-          <FileUploadZone files={files} onFilesChange={onFilesChange} />
+      <div className="space-y-4">
+        <Label>Supporting Documents</Label>
+        <div className="grid gap-4">
+          <Button variant="outline" className="w-full" onClick={() => document.getElementById("file-upload")?.click()}>
+            <Upload className="mr-2 h-4 w-4" />
+            Upload Files
+          </Button>
+          <input id="file-upload" type="file" multiple className="hidden" onChange={handleFileChange} />
+          {files.length > 0 && (
+            <div className="grid gap-2">
+              {files.map((file, index) => (
+                <div key={index} className="text-sm text-muted-foreground">
+                  {file.split("/").pop()}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
 
