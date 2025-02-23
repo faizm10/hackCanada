@@ -10,6 +10,7 @@ if (!admin.apps.length) {
   });
 }
 
+// db
 const db = admin.firestore();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
