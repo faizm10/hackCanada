@@ -1,21 +1,11 @@
-/*
-Task: Create a form where users enter details to generate the legal document.
-
-Dropdown to select document type (Eviction Appeal, Rent Dispute, Complaint)
-Input fields for:
-Landlord’s Name, Address, Email
-Tenant’s Name, Address
-Case Details (e.g., reason for dispute, rent increase amount, etc.)
-
-"Generate Document" Button to send data to the AI backend
-*/
-"use client"
+"use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectTrigger, SelectItem } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { saveAs } from "file-saver";
 
 const LegalDoc = () => {
   const [formData, setFormData] = useState({
@@ -25,19 +15,44 @@ const LegalDoc = () => {
     landlordEmail: "",
     tenantName: "",
     tenantAddress: "",
-    caseDetails: ""
+    caseDetails: "",
   });
   const [generatedDocument, setGeneratedDocument] = useState("");
   const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleGenerate = async () => {
-    const doc = `Legal Document: ${formData.documentType}\n\nLandlord: ${formData.landlordName}\nAddress: ${formData.landlordAddress}\nEmail: ${formData.landlordEmail}\n\nTenant: ${formData.tenantName}\nAddress: ${formData.tenantAddress}\n\nCase Details:\n${formData.caseDetails}`;
-    setGeneratedDocument(doc);
-    setEditing(true);
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/legal-document", { 
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      
+
+      if (!response.ok) {
+        throw new Error("Failed to generate document");
+      }
+
+      const data = await response.json();
+      setGeneratedDocument(data.document);
+      setEditing(true);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDownload = () => {
+    const blob = new Blob([generatedDocument], { type: "text/plain;charset=utf-8" });
+    saveAs(blob, `${formData.documentType}.txt`);
   };
 
   return (
@@ -62,7 +77,9 @@ const LegalDoc = () => {
             <Input name="tenantName" placeholder="Tenant’s Name" onChange={handleChange} className="mt-4" />
             <Input name="tenantAddress" placeholder="Tenant’s Address" onChange={handleChange} className="mt-4" />
             <Textarea name="caseDetails" placeholder="Case Details" onChange={handleChange} className="mt-4" />
-            <Button onClick={handleGenerate} className="mt-4 w-full">Generate Document</Button>
+            <Button onClick={handleGenerate} className="mt-4 w-full" disabled={loading}>
+              {loading ? "Generating..." : "Generate Document"}
+            </Button>
           </CardContent>
         </Card>
       ) : (
@@ -74,7 +91,7 @@ const LegalDoc = () => {
             <Textarea value={generatedDocument} onChange={(e) => setGeneratedDocument(e.target.value)} className="w-full h-40" />
             <div className="flex gap-2 mt-4">
               <Button onClick={() => setEditing(false)}>Modify Inputs</Button>
-              <Button>Finalize Document</Button>
+              <Button onClick={handleDownload}>Download Document</Button>
             </div>
           </CardContent>
         </Card>
