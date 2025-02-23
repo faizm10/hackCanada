@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       Format:
       - Proper legal introduction
       - Address recipient professionally
-      - Cite relevant legal statutes where applicable
+      - Cite relevant legal statutes and cite specific laws where applicable
       - Conclude formally with next steps`,
     ]);
 
