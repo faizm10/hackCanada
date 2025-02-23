@@ -1,4 +1,4 @@
-require("dotenv").config();
+
 const { NextResponse } = require("next/server");
 const { getLegalAdvice } = require("./fetchGoogleGermini")
 
@@ -6,7 +6,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const admin = require("firebase-admin");
 
 // Firebase setup
-const serviceAccount = require("./firebase-config.json"); // Replace with your Firebase config file
+const serviceAccount = require("../firebase-config.json"); // Replace with your Firebase config file
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
