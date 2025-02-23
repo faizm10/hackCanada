@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectTrigger, SelectItem } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { saveAs } from "file-saver";
+import { jsPDF } from "jspdf";
 
 const LegalDoc = () => {
   const [formData, setFormData] = useState({
@@ -35,7 +35,6 @@ const LegalDoc = () => {
         body: JSON.stringify(formData),
       });
       
-
       if (!response.ok) {
         throw new Error("Failed to generate document");
       }
@@ -51,8 +50,13 @@ const LegalDoc = () => {
   };
 
   const handleDownload = () => {
-    const blob = new Blob([generatedDocument], { type: "text/plain;charset=utf-8" });
-    saveAs(blob, `${formData.documentType}.txt`);
+    const doc = new jsPDF();
+    const margin = 10;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const maxLineWidth = pageWidth - margin * 2;
+    const lines = doc.splitTextToSize(generatedDocument, maxLineWidth);
+    doc.text(lines, margin, margin);
+    doc.save(`${formData.documentType}.pdf`);
   };
 
   return (
@@ -63,7 +67,10 @@ const LegalDoc = () => {
             <CardTitle className="text-xl font-bold mb-4">Generate Legal Document</CardTitle>
           </CardHeader>
           <CardContent>
-            <Select value={formData.documentType} onValueChange={(value) => setFormData({ ...formData, documentType: value })}>
+            <Select
+              value={formData.documentType}
+              onValueChange={(value) => setFormData({ ...formData, documentType: value })}
+            >
               <SelectTrigger>{formData.documentType}</SelectTrigger>
               <SelectContent>
                 <SelectItem value="Eviction Appeal">Eviction Appeal</SelectItem>
@@ -88,10 +95,14 @@ const LegalDoc = () => {
             <CardTitle className="text-xl font-bold mb-4">Generated Legal Document</CardTitle>
           </CardHeader>
           <CardContent>
-            <Textarea value={generatedDocument} onChange={(e) => setGeneratedDocument(e.target.value)} className="w-full h-40" />
+            <Textarea
+              value={generatedDocument}
+              onChange={(e) => setGeneratedDocument(e.target.value)}
+              className="w-full h-40"
+            />
             <div className="flex gap-2 mt-4">
               <Button onClick={() => setEditing(false)}>Modify Inputs</Button>
-              <Button onClick={handleDownload}>Download Document</Button>
+              <Button onClick={handleDownload}>Download Document as PDF</Button>
             </div>
           </CardContent>
         </Card>

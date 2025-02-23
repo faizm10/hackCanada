@@ -43,6 +43,7 @@
   "firebase-admin": "^13.1.0",
   "framer-motion": "11.13.1",
   "intl-messageformat": "^10.5.0",
+  "jspdf": "^3.0.0",
   "lucide-react": "^0.475.0",
   "motion": "^12.4.7",
   "next": "^15.1.7",
